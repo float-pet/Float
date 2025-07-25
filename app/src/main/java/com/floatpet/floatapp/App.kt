@@ -21,6 +21,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.floatpet.floatapp.ui.base.BaseExpandedFloat
 import com.floatpet.floatapp.ui.base.BaseFloat
+import com.floatpet.floatapp.ui.crypto.CryptoFloat
+import com.floatpet.floatapp.ui.crypto.CryptoMiniFloat
+import com.floatpet.floatapp.ui.crypto.CryptoExpandedFloat
+import com.floatpet.floatapp.ui.crypto.CryptoDraggableSol
 import io.github.luiisca.floating.views.CloseBehavior
 import io.github.luiisca.floating.views.CloseFloatConfig
 import io.github.luiisca.floating.views.ExpandedFloatConfig
@@ -44,7 +48,7 @@ fun App() {
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      // Base Float
+      // Base Float (Original)
       Button(
         modifier = Modifier.widthIn(min = 200.dp, max = 300.dp),
         onClick = {
@@ -52,23 +56,76 @@ fun App() {
             enableAnimations = false,
             main = MainFloatConfig(
               composable = { BaseFloat() },
-              // Add other main float configurations here
             ),
             close = CloseFloatConfig(
               closeBehavior = CloseBehavior.CLOSE_SNAPS_TO_MAIN_FLOAT,
-              // Add other close float configurations here
             ),
             expanded = ExpandedFloatConfig(
-              composable = {close -> BaseExpandedFloat(close) },
-              // Add other expanded float configurations here
+              composable = { close -> BaseExpandedFloat(close) },
             )
           )
 
-          // Launch a new floating view
           FloatingViewsManager.startFloatServiceIfPermitted(context, config)
         }
       ) {
-        Text(text = "Base", style = MaterialTheme.typography.bodyLarge)
+        Text(text = "Base Float", style = MaterialTheme.typography.bodyLarge)
+      }
+
+      Spacer(modifier = Modifier.height(16.dp))
+
+      // Crypto Float with 3-state progression (New)
+      Button(
+        modifier = Modifier.widthIn(min = 200.dp, max = 300.dp),
+        colors = ButtonDefaults.buttonColors(
+          containerColor = MaterialTheme.colorScheme.secondary
+        ),
+        onClick = {
+          val config = FloatingViewsConfig(
+            enableAnimations = true,
+            main = MainFloatConfig(
+              composable = { CryptoFloat() },
+            ),
+            close = CloseFloatConfig(
+              closeBehavior = CloseBehavior.CLOSE_SNAPS_TO_MAIN_FLOAT,
+              composable = { CryptoMiniFloat() }
+            ),
+            expanded = ExpandedFloatConfig(
+              composable = { close -> CryptoExpandedFloat(close) },
+            )
+          )
+
+          FloatingViewsManager.startFloatServiceIfPermitted(context, config)
+        }
+      ) {
+        Text(text = "Crypto 3-State", style = MaterialTheme.typography.bodyLarge)
+      }
+
+      Spacer(modifier = Modifier.height(16.dp))
+
+      // Draggable SOL Price Float
+      Button(
+        modifier = Modifier.widthIn(min = 200.dp, max = 300.dp),
+        colors = ButtonDefaults.buttonColors(
+          containerColor = MaterialTheme.colorScheme.tertiary
+        ),
+        onClick = {
+          val config = FloatingViewsConfig(
+            enableAnimations = true,
+            main = MainFloatConfig(
+              composable = { CryptoDraggableSol {} },
+            ),
+            close = CloseFloatConfig(
+              closeBehavior = CloseBehavior.CLOSE_SNAPS_TO_MAIN_FLOAT,
+            ),
+            expanded = ExpandedFloatConfig(
+              composable = { close -> CryptoExpandedFloat(close) },
+            )
+          )
+
+          FloatingViewsManager.startFloatServiceIfPermitted(context, config)
+        }
+      ) {
+        Text(text = "SOL Price (Draggable)", style = MaterialTheme.typography.bodyLarge)
       }
 
       // Display a button to stop the service if it's running
